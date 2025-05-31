@@ -21,7 +21,6 @@
 =====================================================================
 
 What is Kickstart?
-
   Kickstart.nvim is *not* a distribution.
 
   Kickstart.nvim is a starting point for your own configuration.
@@ -171,6 +170,41 @@ vim.o.confirm = true
 
 -- Clear highlights on search when pressing <Esc> in normal mode
 --  See `:help hlsearch`
+--NOTE: NVCHAD THEME MAPPINGS
+vim.keymap.set('n', '<leader>tp', '<cmd> lua require("base46").toggle_transparency() <CR>', { desc = 'Toggle transparency' })
+vim.keymap.set('n', '<leader>th', function()
+  require('nvchad.themes').open()
+end, { desc = 'telescope nvchad themes' })
+
+--NOTE: NVCHAD TABUFLINE MAPPINGS
+vim.keymap.set('n', '<tab>', function()
+  require('nvchad.tabufline').next()
+end, { desc = 'buffer goto next' })
+vim.keymap.set('n', '<S-tab>', function()
+  require('nvchad.tabufline').prev()
+end, { desc = 'buffer goto prev' })
+--NOTE: NVCHAD TERMINAL MAPPINGS
+vim.keymap.set('n', '<leader>h', function()
+  require('nvchad.term').new { pos = 'sp' }
+end, { desc = 'terminal new horizontal term' })
+
+vim.keymap.set('n', '<leader>v', function()
+  require('nvchad.term').new { pos = 'vsp' }
+end, { desc = 'terminal new vertical term' })
+
+-- toggleable
+vim.keymap.set({ 'n', 't' }, '<A-v>', function()
+  require('nvchad.term').toggle { pos = 'vsp', id = 'vtoggleTerm' }
+end, { desc = 'terminal toggleable vertical term' })
+
+vim.keymap.set({ 'n', 't' }, '<A-h>', function()
+  require('nvchad.term').toggle { pos = 'sp', id = 'htoggleTerm' }
+end, { desc = 'terminal toggleable horizontal term' })
+
+vim.keymap.set({ 'n', 't' }, '<A-i>', function()
+  require('nvchad.term').toggle { pos = 'float', id = 'floatTerm' }
+end, { desc = 'terminal toggle floating term' })
+
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
 -- Diagnostic keymaps
@@ -228,6 +262,8 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   end,
 })
 
+vim.g.base46_cache = vim.fn.stdpath 'data' .. 'base46_cache'
+
 -- [[ Install `lazy.nvim` plugin manager ]]
 --    See `:help lazy.nvim.txt` or https://github.com/folke/lazy.nvim for more info
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
@@ -254,6 +290,8 @@ rtp:prepend(lazypath)
 --    :Lazy update
 --
 -- NOTE: Here is where you install your plugins.
+--local lazy_config = require 'custom.configs.lazy_config'
+
 require('lazy').setup({
   -- NOTE: Plugins can be added with a link (or for a github repo: 'owner/repo' link).
   'NMAC427/guess-indent.nvim', -- Detect tabstop and shiftwidth automatically
@@ -264,7 +302,7 @@ require('lazy').setup({
   --
   -- Use `opts = {}` to automatically pass options to a plugin's `setup()` function, forcing the plugin to be loaded.
   --
-
+  --
   -- Alternatively, use `config = function() ... end` for full control over the configuration.
   -- If you prefer to call `setup` explicitly, use:
   --    {
@@ -628,7 +666,7 @@ require('lazy').setup({
           --
           -- This may be unwanted, since they displace some of your code
           if client and client_supports_method(client, vim.lsp.protocol.Methods.textDocument_inlayHint, event.buf) then
-            map('<leader>th', function()
+            map('<leader>ih', function()
               vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled { bufnr = event.buf })
             end, '[T]oggle Inlay [H]ints')
           end
@@ -901,32 +939,28 @@ require('lazy').setup({
     },
   },
 
-  { -- You can easily change to a different colorscheme.
-    -- Change the name of the colorscheme plugin below, and then
-    -- change the command in the config to whatever the name of that colorscheme is.
-    --
-    -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
+  -- NOTE: This is the custom theme setup
+  --{
+  --'folke/tokyonight.nvim',
+  --'aliqyan-21/darkvoid.nvim',
+  --'dgox16/oldworld.nvim',
+  -- 'EdenEast/nightfox.nvim',
+  -- priority = 1000, -- Make sure to load this before all the other start plugins.
+  -- config = function()
+  --   ---@diagnostic disable-next-line: missing-fields
+  --   require('nightfox').setup {
+  --     options = {
+  --       transparent = true,
+  --       terminal_colors = true,
+  --     },
+  --   }
 
-    --'folke/tokyonight.nvim',
-    --'aliqyan-21/darkvoid.nvim',
-    --'dgox16/oldworld.nvim',
-    'EdenEast/nightfox.nvim',
-    priority = 1000, -- Make sure to load this before all the other start plugins.
-    config = function()
-      ---@diagnostic disable-next-line: missing-fields
-      require('nightfox').setup {
-        options = {
-          transparent = true,
-          terminal_colors = true,
-        },
-      }
-
-      -- Load the colorscheme here.
-      -- Like many other themes, this one has different styles, and you could load
-      -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-      vim.cmd.colorscheme 'carbonfox'
-    end,
-  },
+  -- Load the colorscheme here.
+  -- Like many other themes, this one has different styles, and you could load
+  -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
+  --   vim.cmd.colorscheme 'carbonfox'
+  -- end,
+  --},
 
   -- Highlight todo, notes, etc in comments
   { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
@@ -948,21 +982,16 @@ require('lazy').setup({
       -- - sd'   - [S]urround [D]elete [']quotes
       -- - sr)'  - [S]urround [R]eplace [)] [']
       require('mini.surround').setup()
-
       -- Simple and easy statusline.
       --  You could remove this setup call if you don't like it,
       --  and try some other statusline plugin
-      local statusline = require 'mini.statusline'
       -- set use_icons to true if you have a Nerd Font
-      statusline.setup { use_icons = vim.g.have_nerd_font }
-
-      -- You can configure sections in the statusline by overriding their
-      -- default behavior. For example, here we set the section for
-      -- cursor location to LINE:COLUMN
-      ---@diagnostic disable-next-line: duplicate-set-field
-      statusline.section_location = function()
-        return '%2l:%-2v'
-      end
+      -- local statusline = require 'mini.statusline'
+      -- statusline.setup { use_icons = vim.g.have_nerd_font }
+      -- ---@diagnostic disable-next-line: duplicate-set-field
+      -- statusline.section_location = function()
+      --   return '%2l:%-2v'
+      -- end
 
       -- ... and there is more!
       --  Check out: https://github.com/echasnovski/mini.nvim
@@ -970,22 +999,25 @@ require('lazy').setup({
   },
   { -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
+    event = { 'BufReadPost', 'BufNewFile' },
     build = ':TSUpdate',
-    main = 'nvim-treesitter.configs', -- Sets main module to use for opts
+    --main = 'nvim-treesitter.configs', -- Sets main module to use for opts
     -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
-    opts = {
-      ensure_installed = { 'bash', 'java', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' },
-      -- Autoinstall languages that are not installed
-      auto_install = true,
-      highlight = {
-        enable = true,
-        -- Some languages depend on vim's regex highlighting system (such as Ruby) for indent rules.
-        --  If you are experiencing weird indenting issues, add the language to
-        --  the list of additional_vim_regex_highlighting and disabled languages for indent.
-        additional_vim_regex_highlighting = { 'ruby' },
-      },
-      indent = { enable = false, disable = { 'ruby' } },
-    },
+    config = function()
+      require('nvim-treesitter.configs').setup {
+        ensure_installed = { 'bash', 'java', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' },
+        -- Autoinstall languages that are not installed
+        auto_install = true,
+        highlight = {
+          enable = true,
+          -- Some languages depend on vim's regex highlighting system (such as Ruby) for indent rules.
+          --  If you are experiencing weird indenting issues, add the language to
+          --  the list of additional_vim_regex_highlighting and disabled languages for indent.
+          additional_vim_regex_highlighting = { 'ruby' },
+        },
+        indent = { enable = false, disable = { 'ruby' } },
+      }
+    end,
     -- There are additional nvim-treesitter modules that you can use to interact
     -- with nvim-treesitter. You should go explore a few and see what interests you:
     --
@@ -1041,6 +1073,19 @@ require('lazy').setup({
     },
   },
 })
+
+dofile(vim.g.base46_cache .. 'defaults')
+dofile(vim.g.base46_cache .. 'syntax')
+dofile(vim.g.base46_cache .. 'treesitter')
+dofile(vim.g.base46_cache .. 'statusline')
+
+-- very bad hack to change nvui themes
+-- local function changetheme(theme)
+--   local config = require 'chadrc'
+--   config.base46.theme = theme
+--   require('base46').load_all_highlights()
+-- end
+-- changetheme 'tokyonight'
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
