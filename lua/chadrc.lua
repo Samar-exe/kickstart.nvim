@@ -1,6 +1,6 @@
 local M = {}
 M.base46 = {
-  theme = 'nord',
+  theme = 'chadwal',
   transparency = true,
 }
 

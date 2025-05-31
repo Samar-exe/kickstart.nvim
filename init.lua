@@ -1087,5 +1087,16 @@ dofile(vim.g.base46_cache .. 'statusline')
 -- end
 -- changetheme 'tokyonight'
 
+--NOTE: Integrating pywal/matugen for dynamically changing colors according to the background
+os.execute 'python ~/.config/nvim/pywal/chadwal.py &> /dev/null &'
+
+local autocmd = vim.api.nvim_create_autocmd
+
+autocmd('Signal', {
+  pattern = 'SIGUSR1',
+  callback = function()
+    require('nvchad.utils').reload()
+  end,
+})
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
