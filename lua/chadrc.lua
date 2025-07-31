@@ -1,7 +1,7 @@
 local M = {}
 M.base46 = {
-  theme = 'chadwal',
-  transparency = true,
+  theme = 'radium',
+  transparency = false,
 }
 
 M.ui = {

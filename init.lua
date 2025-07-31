@@ -105,7 +105,7 @@ vim.o.relativenumber = true
 
 -- Enable mouse mode, can be useful for resizing splits for example!
 vim.o.mouse = 'a'
-
+vim.o.guicursor = 'n-v-c-i:block'
 -- Don't show the mode, since it's already in the status line
 vim.o.showmode = false
 
@@ -835,7 +835,7 @@ require('lazy').setup({
         javascript = { 'prettierd', 'prettier', stop_after_first = true },
         html = { 'prettier' },
         css = { 'prettier' },
-        java = { 'google-java-format' },
+        java = { 'clang-format' },
       },
     },
   },
@@ -1005,7 +1005,7 @@ require('lazy').setup({
     -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
     config = function()
       require('nvim-treesitter.configs').setup {
-        ensure_installed = { 'bash', 'java', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' },
+        ensure_installed = { 'bash', 'java', 'c', 'diff', 'html', 'lua', 'luadoc', 'query', 'vim', 'vimdoc' },
         -- Autoinstall languages that are not installed
         auto_install = true,
         highlight = {
