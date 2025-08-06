@@ -8,6 +8,8 @@ return {
   opts = {},
   config = function()
     require('render-markdown').setup {
+      preset = 'obsidian',
+      completions = { lsp = { enabled = true }, blink = { enabled = true } },
       code = {
         style = 'full',
         width = 'block',
@@ -22,3 +24,13 @@ return {
     }
   end,
 }
+
+-- vim.api.nvim_create_autocmd('FileType', {
+--   pattern = 'markdown',
+--   callback = function()
+--     vim.opt_local.wrap = true
+--     vim.opt_local.linebreak = true
+--     vim.opt_local.textwidth = 80
+--     vim.opt_local.formatoptions:append('tca')
+--   end,
+-- })

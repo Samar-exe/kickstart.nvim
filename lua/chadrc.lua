@@ -2,6 +2,7 @@ local M = {}
 M.base46 = {
   theme = 'radium',
   transparency = false,
+  integrations = { 'render-markdown' },
 }
 
 M.ui = {

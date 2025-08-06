@@ -241,7 +241,7 @@ vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper win
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
-
+--
 -- autocmds to dynamically adjust padding of kitty. Snippet taken from NvChad docs
 vim.api.nvim_create_autocmd('VimEnter', {
   command = ':silent !kitty @ set-spacing padding=0 margin=0',
@@ -1078,6 +1078,7 @@ dofile(vim.g.base46_cache .. 'defaults')
 dofile(vim.g.base46_cache .. 'syntax')
 dofile(vim.g.base46_cache .. 'treesitter')
 dofile(vim.g.base46_cache .. 'statusline')
+dofile(vim.g.base46_cache .. 'render-markdown')
 
 -- very bad hack to change nvui themes
 -- local function changetheme(theme)
